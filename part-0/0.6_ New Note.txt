@@ -1,0 +1,6 @@
+title Create a New Note in SPA
+
+Browser->Server: HTTPS POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+note over Server: form data is sent to the server URL (data: MURICA!)
+Server->Browser: A single file is returned (new_note_spa) 
+

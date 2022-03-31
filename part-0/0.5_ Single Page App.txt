@@ -1,0 +1,12 @@
+title Single Page App
+
+Browser->Server: HTTPS GET  https://studies.cs.helsinki.fi/exampleapp/spa
+Server->Browser: HTML-code (spa.html)
+Browser->Server: HTTPS GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server->Browser: main.css
+Browser->Server: HTTPS GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+Server->Browser: spa.js
+Browser->Server: HTTPS GET  https://studies.cs.helsinki.fi/exampleapp/data.json
+note left of Server: Returns data in JSON format
+Browser->Server: HTTPS GET https://studies.cs.helsinki.fi/favicon.ico
+Server->Browser: HTML-code (favicon.ico)
