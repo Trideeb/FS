@@ -1,3 +1,4 @@
+const { request, response } = require('express')
 const express = require('express')
 const app = express()
 app.use(express.json())
@@ -27,8 +28,8 @@ let persons = [
 ]
 
 const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => n.id))
+  const maxId = persons.length > 0
+    ? Math.max(...persons.map(n => n.id))
     : 0
   return maxId + 1
 }
