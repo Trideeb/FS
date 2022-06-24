@@ -1,1 +1,1 @@
-https://phonebook-3deeb.herokuapp.com
+https://phonebook-3deebs.herokuapp.com/
