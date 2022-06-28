@@ -20,14 +20,15 @@ const personSchema = new mongoose.Schema({
   },
   number: {
     type: String,
+    minlength: 8,
     validate: {
       validator: function(v) {
         var n = v.indexOf('-')
-        return (n === 2 || n === 3) && v.minlength === 8
+        return (n === 2 || n === 3)
       }
     },
     required: true
-  },
+  }
 })
 
 personSchema.set('toJSON' , {

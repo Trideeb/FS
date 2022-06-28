@@ -46,7 +46,7 @@ app.post('/api/persons', (request, response, next) => {
     number: body.number
   })
 
-  if (body.name === undefined && body.number) {
+  if (body.name === undefined && body.number === undefined) {
     return response.status(400).json({ error: 'content missing' })
   }
 
