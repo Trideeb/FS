@@ -40,9 +40,13 @@ const App = () => {
       }
       personService 
         .create(dataObject)
-        .then(response =>
-          setPersons(persons.concat(response)))
+        .then(response => {
+          setPersons(persons.concat(response))
           notify(`Added ${dataObject.name}`)
+        })
+        .catch(error => {
+          notify(JSON.stringify(error.response.data.error), 'alert')
+        })
     }
     else if(checkPerson && checkPerson.number !== newNumber) {
       if(window.confirm(`Are you sure you want update ${checkPerson.name}'s number with a new one?`)) {
@@ -62,9 +66,8 @@ const App = () => {
             })
             .catch(error => {
               notify(
-                `the person '${checkPerson.name}' has already been removed from the server`, 'alert'
+                JSON.stringify(error.response.data.error), 'alert'
               )
-              setPersons(persons.filter(p => p.id !== checkPerson.id))
             })
       }
     }

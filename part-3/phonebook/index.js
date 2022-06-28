@@ -1,5 +1,4 @@
 require('dotenv').config()
-const { request, response } = require('express')
 const express = require('express')
 const app = express()
 app.use(express.json())
@@ -11,19 +10,6 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-app.get('/info', (request, response) => {
-  var jsonLength = Object.keys(persons).length;
-  var today = new Date();
-  const option1 = { weekday: 'long' };
-  const option2 = { month: 'long' }
-  response.send(`
-  <div>
-    <p>Phonebook has info for ${jsonLength} people</p>
-    <p>${new Intl.DateTimeFormat('en-US', option1).format(today)} ${new Intl.DateTimeFormat('en-US', option2).format(today)}
-    ${today.getDate()} ${today.getFullYear()} ${today.toTimeString()}</p>
-  </div>`)
-})
-
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
@@ -32,18 +18,13 @@ app.get('/api/persons/:id', (request, response, next) => {
       else
         response.stataus(404).end()
     })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const body = request.body
+  const { name, number } = request.body
 
-  const person = ({
-    name: body.name,
-    number: body.number
-  })
-
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, { name, number }, { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
@@ -58,22 +39,21 @@ app.delete('/api/persons/:id', (request, response) => {
     })
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
   const person = new Person({
     name: body.name,
     number: body.number
   })
 
-  if (body.name == undefined && body.number == undefined) {
-    return response.status(400).json({
-      error: 'Enter a valid name and number'
-    })
+  if (body.name === undefined && body.number) {
+    return response.status(400).json({ error: 'content missing' })
   }
 
   person.save().then(person => {
     response.json(person)
   })
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
@@ -85,7 +65,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
 
   next(error)
 }
@@ -93,6 +75,7 @@ const errorHandler = (error, request, response, next) => {
 app.use(unknownEndpoint)
 app.use(errorHandler)
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
